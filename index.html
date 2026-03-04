@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Estus Accelerator — 2-3 Years and Forget</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --background: hsl(35, 30%, 92%);
+    --background-light: hsl(35, 35%, 96%);
+    --foreground: hsl(20, 25%, 15%);
+    --card: hsl(0, 0%, 100%);
+    --primary: hsl(25, 35%, 35%);
+    --primary-hover: hsl(25, 40%, 42%);
+    --primary-foreground: hsl(35, 30%, 92%);
+    --secondary: hsl(35, 20%, 82%);
+    --border: hsl(25, 20%, 80%);
+    --border-light: hsl(25, 15%, 88%);
+    --muted: hsl(20, 15%, 40%);
+    --muted-light: hsl(20, 10%, 58%);
+    --noctua-brown: hsl(25, 35%, 35%);
+    --noctua-brown-dark: hsl(20, 30%, 22%);
+    --noctua-cream: hsl(35, 30%, 92%);
+    --noctua-tan: hsl(35, 25%, 88%);
+    --gradient-accent: linear-gradient(135deg, hsl(25, 40%, 50%) 0%, hsl(20, 30%, 28%) 100%);
+    --shadow-glow: 0 0 60px hsl(25 35% 35% / 0.1);
+    --shadow-card: 0 1px 3px hsl(20 25% 15% / 0.04);
+    --shadow-card-hover: 0 8px 30px hsl(20 25% 15% / 0.08);
+    --font-display: 'Oswald', sans-serif;
+    --font-serif: 'Libre Baskerville', serif;
+    --font-body: 'Inter', sans-serif;
+    --radius: 0.25rem;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-body);
+    background: var(--background);
+    color: var(--foreground);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+  }
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1rem 2.5rem; display: flex; justify-content: space-between; align-items: center;
+    background: hsla(35, 30%, 92%, 0.9); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .nav-brand {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.1rem;
+    color: var(--primary); letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
+  }
+  .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+  .nav-cta-soft {
+    font-family: var(--font-display); font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);
+    background: transparent; padding: 0.55rem 1.2rem; border: 1px solid var(--border);
+    border-radius: var(--radius); text-decoration: none; cursor: pointer; transition: all 0.2s ease;
+  }
+  .nav-cta-soft:hover { border-color: var(--primary); color: var(--primary); }
+  .nav-cta {
+    font-family: var(--font-display); font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary-foreground);
+    background: var(--primary); padding: 0.55rem 1.2rem; border-radius: var(--radius);
+    text-decoration: none; border: none; cursor: pointer; transition: all 0.2s ease;
+  }
+  .nav-cta:hover { background: var(--primary-hover); }
+  .section-label {
+    font-family: var(--font-display); font-size: 0.65rem; font-weight: 500;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--primary);
+    margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::before { content: ''; width: 20px; height: 2px; background: var(--primary); }
+  .section-title {
+    font-family: var(--font-display); font-size: 2.4rem; font-weight: 400;
+    line-height: 1.1; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem;
+  }
+  .section-subtitle {
+    font-size: 1rem; color: var(--muted); font-weight: 300; line-height: 1.7; max-width: 540px;
+  }
+  .section-header { margin-bottom: 3.5rem; }
+  .serif-em { font-family: var(--font-serif); font-style: italic; font-weight: 400; text-transform: none; }
+  .btn-primary {
+    font-family: var(--font-display); font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--primary-foreground);
+    background: var(--primary); padding: 0.85rem 2rem; border-radius: var(--radius);
+    text-decoration: none; border: none; cursor: pointer; transition: all 0.25s ease;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-glow); }
+  .btn-ghost {
+    font-family: var(--font-display); font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+    background: transparent; padding: 0.85rem 1.5rem; border: 1px solid var(--border);
+    border-radius: var(--radius); text-decoration: none; cursor: pointer; transition: all 0.25s ease;
+  }
+  .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 2.5rem 4rem; max-width: 1100px; margin: 0 auto; position: relative;
+  }
+  .hero-label {
+    font-family: var(--font-display); font-size: 0.7rem; font-weight: 500;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--primary);
+    margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;
+    opacity: 0; animation: fadeUp 0.6s 0.1s ease-out forwards;
+  }
+  .hero-label::before { content: ''; width: 24px; height: 2px; background: var(--primary); }
+  .hero h1 {
+    font-family: var(--font-display); font-size: clamp(3rem, 6.5vw, 5rem); font-weight: 400;
+    line-height: 1.05; letter-spacing: 1px; text-transform: uppercase; max-width: 780px;
+    margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.7s 0.2s ease-out forwards;
+  }
+  .hero h1 .accent {
+    background: var(--gradient-accent); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;
+  }
+  .hero-body {
+    font-size: 1.05rem; line-height: 1.75; color: var(--muted); max-width: 540px;
+    font-weight: 300; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.7s 0.35s ease-out forwards;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.7s 0.5s ease-out forwards;
+  }
+  .hero-aside {
+    position: absolute; bottom: 3rem; right: 2.5rem; font-family: var(--font-serif);
+    font-style: italic; font-size: 0.78rem; color: var(--muted-light); max-width: 240px;
+    text-align: right; line-height: 1.6; opacity: 0; animation: fadeUp 0.6s 0.8s ease-out forwards;
+  }
+  .hero-aside .strike { text-decoration: line-through; text-decoration-color: var(--primary); opacity: 0.6; }
+  .photo-break {
+    width: 100%; height: 320px; background: var(--noctua-tan);
+    border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+  }
+  .photo-break-inner { display: flex; gap: 1.5rem; padding: 0 2.5rem; max-width: 1100px; width: 100%; }
+  .photo-placeholder {
+    flex: 1; height: 240px; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0.5rem; position: relative; overflow: hidden;
+  }
+  .photo-placeholder::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, hsla(25, 20%, 80%, 0.15) 25%, transparent 25%),
+      linear-gradient(225deg, hsla(25, 20%, 80%, 0.15) 25%, transparent 25%),
+      linear-gradient(315deg, hsla(25, 20%, 80%, 0.15) 25%, transparent 25%),
+      linear-gradient(45deg, hsla(25, 20%, 80%, 0.15) 25%, transparent 25%);
+    background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; opacity: 0.4;
+  }
+  .photo-placeholder svg {
+    width: 32px; height: 32px; stroke: var(--border); fill: none; stroke-width: 1;
+    position: relative; z-index: 1;
+  }
+  .photo-placeholder .photo-label {
+    font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted-light); position: relative;
+    z-index: 1; text-align: center; line-height: 1.5;
+  }
+  .promise-bar {
+    background: var(--noctua-brown-dark); color: hsl(35, 30%, 90%);
+    padding: 5rem 2.5rem; position: relative; overflow: hidden;
+  }
+  .promise-bar::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, hsla(25, 35%, 50%, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .promise-inner {
+    max-width: 1100px; margin: 0 auto; display: grid;
+    grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center; position: relative; z-index: 1;
+  }
+  .promise-left h2 {
+    font-family: var(--font-display); font-size: 2.2rem; font-weight: 400;
+    line-height: 1.2; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem;
+  }
+  .promise-left p { font-size: 0.95rem; line-height: 1.8; color: hsla(35, 30%, 90%, 0.55); font-weight: 300; }
+  .promise-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    background: hsla(35, 30%, 90%, 0.08); border-radius: var(--radius); overflow: hidden;
+  }
+  .promise-stat { padding: 2rem 1.5rem; background: hsla(20, 30%, 18%, 0.8); text-align: center; }
+  .promise-stat .num { font-family: var(--font-display); font-size: 2.6rem; font-weight: 300; letter-spacing: 1px; }
+  .promise-stat .label {
+    font-family: var(--font-body); font-size: 0.6rem; letter-spacing: 1.5px;
+    text-transform: uppercase; color: hsla(35, 30%, 90%, 0.35); margin-top: 0.3rem; line-height: 1.6;
+  }
+  .dreamteam-section { padding: 6rem 2.5rem; max-width: 1100px; margin: 0 auto; }
+  .dt-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .dt-content h2 {
+    font-family: var(--font-display); font-size: 2rem; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 1px; line-height: 1.15; margin-bottom: 1rem;
+  }
+  .dt-content > p { font-size: 0.95rem; line-height: 1.75; color: var(--muted); font-weight: 300; margin-bottom: 1.5rem; }
+  .dt-feature { display: flex; gap: 0.85rem; margin-bottom: 1.25rem; font-size: 0.88rem; line-height: 1.55; color: var(--muted); }
+  .dt-feature-icon {
+    width: 32px; height: 32px; border-radius: var(--radius); background: var(--background);
+    border: 1px solid var(--border-light); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .dt-feature-icon svg {
+    width: 16px; height: 16px; stroke: var(--primary); fill: none;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .dt-feature strong { color: var(--foreground); font-weight: 600; }
+  .dt-coaches { display: flex; flex-direction: column; gap: 1rem; }
+  .dt-coach-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.25rem 1.5rem; display: flex; gap: 1rem; align-items: center;
+    box-shadow: var(--shadow-card); transition: all 0.3s ease;
+  }
+  .dt-coach-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+  .dt-coach-avatar {
+    width: 52px; height: 52px; border-radius: 50%; background: var(--noctua-tan);
+    border: 1px solid var(--border); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; position: relative; overflow: hidden;
+  }
+  .dt-coach-avatar::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: linear-gradient(135deg, hsla(25, 20%, 75%, 0.2) 25%, transparent 25%),
+      linear-gradient(225deg, hsla(25, 20%, 75%, 0.2) 25%, transparent 25%);
+    background-size: 8px 8px;
+  }
+  .dt-coach-avatar svg {
+    width: 22px; height: 22px; stroke: var(--border); fill: none;
+    stroke-width: 1.2; position: relative; z-index: 1;
+  }
+  .dt-coach-info h4 {
+    font-family: var(--font-display); font-size: 0.8rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.1rem;
+  }
+  .dt-coach-info .role { font-size: 0.75rem; color: var(--primary); font-weight: 500; }
+  .dt-coach-info .desc { font-size: 0.75rem; color: var(--muted-light); font-weight: 300; margin-top: 0.15rem; }
+  .dt-coming-soon {
+    text-align: center; padding: 1.25rem; border: 1px dashed var(--border);
+    border-radius: var(--radius); font-family: var(--font-serif); font-style: italic;
+    font-size: 0.82rem; color: var(--muted-light);
+  }
+  .accelerator-section {
+    padding: 6rem 2.5rem; background: var(--noctua-tan);
+    border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+  }
+  .accelerator-inner { max-width: 1100px; margin: 0 auto; }
+  .phase-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+  .phase-card {
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    background: var(--card); transition: all 0.3s ease; box-shadow: var(--shadow-card);
+  }
+  .phase-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-3px); }
+  .phase-card-top { padding: 1.75rem 1.5rem 1.25rem; border-bottom: 1px solid var(--border-light); }
+  .phase-num {
+    font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted-light); margin-bottom: 0.5rem;
+  }
+  .phase-card-top h3 {
+    font-family: var(--font-display); font-size: 1.5rem; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;
+  }
+  .phase-time { font-size: 0.75rem; color: var(--primary); font-weight: 500; }
+  .phase-card-body { padding: 1.25rem 1.5rem 1.5rem; }
+  .phase-item {
+    padding: 0.55rem 0; border-bottom: 1px solid var(--border-light); font-size: 0.85rem;
+    color: var(--muted); line-height: 1.55; display: flex; gap: 0.6rem; align-items: flex-start;
+  }
+  .phase-item:last-of-type { border-bottom: none; }
+  .phase-item .marker {
+    width: 4px; height: 4px; border-radius: 50%; background: var(--primary);
+    flex-shrink: 0; margin-top: 7px; opacity: 0.4;
+  }
+  .phase-unlock {
+    margin-top: 1rem; padding: 0.85rem 1rem; background: var(--background);
+    border-radius: var(--radius); border-left: 3px solid var(--primary);
+  }
+  .phase-unlock .unlock-label {
+    font-family: var(--font-display); font-size: 0.55rem; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--primary); margin-bottom: 0.2rem;
+  }
+  .phase-unlock p { font-size: 0.82rem; font-weight: 500; color: var(--foreground); line-height: 1.45; }
+  .classof-section { padding: 6rem 2.5rem; max-width: 1100px; margin: 0 auto; }
+  .classof-header { text-align: center; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+  .classof-header .section-label { justify-content: center; }
+  .classof-header h2 {
+    font-family: var(--font-display); font-size: 2.2rem; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 1px; line-height: 1.15; margin-bottom: 0.75rem;
+  }
+  .classof-header p { font-size: 0.95rem; color: var(--muted); font-weight: 300; line-height: 1.7; }
+  .classof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 700px; margin: 0 auto; }
+  .classof-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 2rem 1.75rem; text-align: center; box-shadow: var(--shadow-card); transition: all 0.3s ease;
+  }
+  .classof-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-3px); }
+  .classof-avatar {
+    width: 80px; height: 80px; border-radius: 50%; background: var(--noctua-tan);
+    border: 2px solid var(--border); margin: 0 auto 1.25rem; display: flex;
+    align-items: center; justify-content: center; position: relative; overflow: hidden;
+  }
+  .classof-avatar::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: linear-gradient(135deg, hsla(25, 20%, 75%, 0.2) 25%, transparent 25%),
+      linear-gradient(225deg, hsla(25, 20%, 75%, 0.2) 25%, transparent 25%);
+    background-size: 10px 10px;
+  }
+  .classof-avatar svg {
+    width: 32px; height: 32px; stroke: var(--border); fill: none;
+    stroke-width: 1; position: relative; z-index: 1;
+  }
+  .classof-card h3 {
+    font-family: var(--font-display); font-size: 1.1rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.15rem;
+  }
+  .classof-card .classof-role { font-size: 0.75rem; color: var(--primary); font-weight: 500; margin-bottom: 0.75rem; }
+  .classof-card p { font-size: 0.82rem; line-height: 1.65; color: var(--muted); font-weight: 300; font-style: italic; }
+  .classof-card .classof-phase {
+    margin-top: 1rem; font-family: var(--font-display); font-size: 0.6rem;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--muted-light);
+  }
+  .pathways-section {
+    padding: 6rem 2.5rem; background: var(--noctua-tan);
+    border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+  }
+  .pathways-inner { max-width: 1100px; margin: 0 auto; }
+  .pathways-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+  .pathway-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.75rem 1.5rem; transition: all 0.3s ease; box-shadow: var(--shadow-card);
+  }
+  .pathway-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); border-color: var(--primary); }
+  .pathway-icon {
+    width: 40px; height: 40px; border-radius: var(--radius); background: var(--background);
+    border: 1px solid var(--border-light); display: flex; align-items: center;
+    justify-content: center; margin-bottom: 1.25rem;
+  }
+  .pathway-icon svg {
+    width: 20px; height: 20px; stroke: var(--primary); fill: none;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .pathway-card h3 {
+    font-family: var(--font-display); font-size: 1rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.15rem;
+  }
+  .pathway-tag { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted-light); margin-bottom: 0.85rem; }
+  .pathway-card p { font-size: 0.82rem; line-height: 1.65; color: var(--muted); font-weight: 300; }
+  .spec-section { padding: 6rem 2.5rem; }
+  .spec-inner { max-width: 1100px; margin: 0 auto; }
+  .spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .spec-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.75rem 1.5rem; transition: all 0.3s ease; box-shadow: var(--shadow-card);
+  }
+  .spec-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); border-color: var(--primary); }
+  .spec-card-icon {
+    width: 36px; height: 36px; border-radius: var(--radius); background: var(--background);
+    border: 1px solid var(--border-light); display: flex; align-items: center;
+    justify-content: center; margin-bottom: 1rem;
+  }
+  .spec-card-icon svg {
+    width: 18px; height: 18px; stroke: var(--primary); fill: none;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .spec-card h3 {
+    font-family: var(--font-display); font-size: 1rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.1rem;
+  }
+  .spec-card .tag { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--primary); margin-bottom: 0.75rem; }
+  .spec-card p { font-size: 0.82rem; line-height: 1.65; color: var(--muted); font-weight: 300; }
+  .wellbeing-section {
+    padding: 6rem 2.5rem; background: var(--noctua-brown-dark); color: hsl(35, 30%, 90%);
+    position: relative; overflow: hidden;
+  }
+  .wellbeing-section::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, hsla(25, 35%, 50%, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .wellbeing-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+  .wellbeing-header { text-align: center; max-width: 620px; margin: 0 auto 4rem; }
+  .wellbeing-header .section-label { justify-content: center; color: hsla(35, 30%, 90%, 0.4); }
+  .wellbeing-header .section-label::before { background: hsla(35, 30%, 90%, 0.2); }
+  .wellbeing-header h2 {
+    font-family: var(--font-display); font-size: 2.2rem; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 1px; line-height: 1.15; margin-bottom: 1rem;
+  }
+  .wellbeing-header p { font-size: 0.95rem; line-height: 1.75; color: hsla(35, 30%, 90%, 0.45); font-weight: 300; }
+  .wb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .wb-card {
+    background: hsla(20, 25%, 20%, 0.6); border: 1px solid hsla(35, 30%, 90%, 0.06);
+    border-radius: var(--radius); padding: 2rem 1.5rem; transition: all 0.3s ease;
+  }
+  .wb-card:hover { border-color: hsla(25, 40%, 50%, 0.3); transform: translateY(-3px); }
+  .wb-card-icon {
+    width: 36px; height: 36px; border-radius: var(--radius);
+    background: hsla(25, 40%, 50%, 0.1); border: 1px solid hsla(25, 40%, 50%, 0.15);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
+  }
+  .wb-card-icon svg {
+    width: 18px; height: 18px; stroke: hsla(25, 40%, 60%, 0.8); fill: none;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .wb-card h3 {
+    font-family: var(--font-display); font-size: 0.9rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.6rem;
+  }
+  .wb-card p { font-size: 0.82rem; line-height: 1.65; color: hsla(35, 30%, 90%, 0.4); font-weight: 300; }
+  .vs-section { padding: 6rem 2.5rem; border-bottom: 1px solid var(--border-light); }
+  .vs-inner { max-width: 900px; margin: 0 auto; }
+  .vs-table { width: 100%; margin-top: 3rem; }
+  .vs-row { display: grid; grid-template-columns: 140px 1fr 1fr; border-bottom: 1px solid var(--border-light); }
+  .vs-row.vs-head { border-bottom: 2px solid var(--border); }
+  .vs-cell { padding: 1rem 1.15rem; font-size: 0.84rem; line-height: 1.5; color: var(--muted); font-weight: 300; }
+  .vs-head .vs-cell {
+    font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted-light); font-weight: 500; padding-bottom: 0.6rem;
+  }
+  .vs-head .vs-cell:nth-child(3) { color: var(--primary); }
+  .vs-cell.label {
+    font-family: var(--font-display); font-weight: 500; color: var(--foreground);
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .vs-cell.typical { color: var(--muted-light); }
+  .vs-cell.estus {
+    color: var(--foreground); font-weight: 400;
+    background: hsla(25, 35%, 35%, 0.04); border-left: 2px solid var(--primary);
+  }
+  .nextgen-section {
+    padding: 5rem 2.5rem; background: var(--noctua-tan);
+    border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+  }
+  .nextgen-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+  .nextgen-inner h2 {
+    font-family: var(--font-display); font-size: 2rem; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; margin-bottom: 1.25rem;
+  }
+  .nextgen-inner p {
+    font-size: 1rem; line-height: 1.8; color: var(--muted); font-weight: 300;
+    max-width: 620px; margin: 0 auto 1.5rem;
+  }
+  .nextgen-inner p:last-of-type { margin-bottom: 0; }
+  .nextgen-inner strong { color: var(--foreground); font-weight: 500; }
+  .faq-section { padding: 6rem 2.5rem; }
+  .faq-inner { max-width: 700px; margin: 0 auto; }
+  .faq-item { border-bottom: 1px solid var(--border-light); padding: 1.5rem 0; }
+  .faq-item:first-child { border-top: 1px solid var(--border-light); }
+  .faq-q {
+    font-family: var(--font-display); font-size: 1rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.6rem; color: var(--foreground);
+  }
+  .faq-a { font-size: 0.9rem; line-height: 1.7; color: var(--muted); font-weight: 300; }
+  .cta-section { padding: 8rem 2.5rem; text-align: center; }
+  .cta-inner { max-width: 640px; margin: 0 auto; }
+  .cta-inner h2 {
+    font-family: var(--font-display); font-size: clamp(2.2rem, 4.5vw, 3.2rem); font-weight: 400;
+    text-transform: uppercase; letter-spacing: 1px; line-height: 1.1; margin-bottom: 1rem;
+  }
+  .cta-inner h2 .accent {
+    background: var(--gradient-accent); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;
+  }
+  .cta-sub {
+    font-family: var(--font-serif); font-style: italic; font-size: 1rem;
+    color: var(--muted); margin-bottom: 2.5rem; line-height: 1.6;
+  }
+  .cta-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
+  .cta-footer { font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted-light); line-height: 2; }
+  .cta-footer .brand {
+    font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+    color: var(--primary); letter-spacing: 2px; margin-bottom: 0.3rem;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 900px) {
+    .phase-grid { grid-template-columns: 1fr; }
+    .pathways-grid { grid-template-columns: 1fr 1fr; }
+    .promise-inner { grid-template-columns: 1fr; }
+    .dt-layout { grid-template-columns: 1fr; }
+    .spec-grid { grid-template-columns: 1fr; }
+    .wb-grid { grid-template-columns: 1fr; }
+    .vs-row { grid-template-columns: 1fr; }
+    .vs-head { display: none; }
+    .vs-cell.label { padding-top: 1.25rem; }
+    .vs-cell.typical::before { content: 'Typical: '; font-weight: 600; }
+    .vs-cell.estus::before { content: 'Estus: '; font-weight: 600; color: var(--primary); }
+    .hero-aside { position: static; text-align: left; margin-top: 3rem; }
+    .photo-break-inner { flex-direction: column; gap: 1rem; }
+    .photo-placeholder { height: 160px; }
+    .photo-break { height: auto; padding: 2rem 0; }
+    .classof-grid { grid-template-columns: 1fr; max-width: 400px; }
+  }
+  @media (max-width: 600px) {
+    .pathways-grid { grid-template-columns: 1fr; }
+    .nav-cta-soft { display: none; }
+  }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="#" class="nav-brand">Estus Health</a>
+    <div class="nav-right">
+      <button class="nav-cta-soft">Talk to the Team</button>
+      <button class="nav-cta">Apply Now</button>
+    </div>
+  </nav>
+  <section class="hero">
+    <div class="hero-label">The Estus Accelerator &middot; Perth, WA</div>
+    <h1>
+      2-3 years.<br>
+      <span class="serif-em">Forget</span> everything<br>
+      you feared about<br>
+      <span class="accent">your career.</span>
+    </h1>
+    <p class="hero-body">
+      Estus Health isn't a job. It's the most intensive clinical accelerator in occupational therapy. In 2-3 years, you'll build the skills, confidence, and leadership capacity that most clinicians spend a decade chasing. And if you want to start your own practice after that? We'll help you do it.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary">Apply to the Accelerator</button>
+      <button class="btn-ghost">Talk to the Team First</button>
+    </div>
+    <div class="hero-aside">
+      Yes, this is inspired by Makachev.
+      <span class="strike">"2-3 years Dagestan and forget."</span><br>
+      Same energy. Different arena.
+    </div>
+  </section>
+  <div class="photo-break">
+    <div class="photo-break-inner">
+      <div class="photo-placeholder">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span class="photo-label">Clinic / Team Photo</span>
+      </div>
+      <div class="photo-placeholder">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span class="photo-label">Session in Action</span>
+      </div>
+      <div class="photo-placeholder">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span class="photo-label">Team Culture</span>
+      </div>
+    </div>
+  </div>
+  <section class="promise-bar">
+    <div class="promise-inner">
+      <div class="promise-left">
+        <h2>
+          We don't just hire clinicians.<br>
+          We build <span class="serif-em">leaders who last.</span>
+        </h2>
+        <p>
+          Most new grads enter the workforce anxious, unsupported, and on a path to burnout within five years. The Estus Accelerator is designed to do the opposite. Structured mentorship. Clinical specialisation. Leadership training. Personal growth systems. A clinic-based team environment where you learn alongside people, not alone in your car between home visits.
+        </p>
+      </div>
+      <div class="promise-stats">
+        <div class="promise-stat"><div class="num">6+</div><div class="label">Specialisation<br>Tracks</div></div>
+        <div class="promise-stat"><div class="num">52</div><div class="label">Supervision<br>Sessions / Year</div></div>
+        <div class="promise-stat"><div class="num">12</div><div class="label">Expert Masterclasses<br>Per Year</div></div>
+        <div class="promise-stat"><div class="num">4</div><div class="label">Leadership<br>Pathways</div></div>
+      </div>
+    </div>
+  </section>
+  <section class="dreamteam-section">
+    <div class="dt-layout">
+      <div class="dt-content">
+        <div class="section-label">Monthly Masterclass</div>
+        <h2>Your personal <span class="serif-em">board of advisors.</span> Every month.</h2>
+        <p>
+          Every month, a hand-picked external expert joins the team for a dedicated deep-dive. Not generic PD webinars. Curated, intimate sessions with the people who are shaping allied health. Think of it as assembling a dream team of coaches around you for the most formative years of your career.
+        </p>
+        <div class="dt-feature">
+          <span class="dt-feature-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          <div><strong>Clinical expertise</strong> from specialist OTs, psychologists, and researchers at the cutting edge of neurodivergent care</div>
+        </div>
+        <div class="dt-feature">
+          <span class="dt-feature-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+          <div><strong>Leadership and motivation</strong> from founders and practice leaders who've built the careers you want</div>
+        </div>
+        <div class="dt-feature">
+          <span class="dt-feature-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
+          <div><strong>Business and strategy</strong> from operators who understand the commercial reality of sustainable practice</div>
+        </div>
+        <div class="dt-feature">
+          <span class="dt-feature-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          <div><strong>Live Q&amp;A in small-group format.</strong> Real questions. Real connections. Not a 200-person webinar.</div>
+        </div>
+      </div>
+      <div class="dt-coaches">
+        <div class="dt-coach-card">
+          <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="dt-coach-info">
+            <h4>Trystan Conway</h4>
+            <div class="role">Organisational Design Consultant</div>
+            <div class="desc">Leadership, systems thinking, team architecture</div>
+          </div>
+        </div>
+        <div class="dt-coach-card">
+          <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="dt-coach-info">
+            <h4>Laura Maguire</h4>
+            <div class="role">Founder, Path Connect</div>
+            <div class="desc">Allied health recruitment, career strategy</div>
+          </div>
+        </div>
+        <div class="dt-coach-card">
+          <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="dt-coach-info">
+            <h4>Guest Expert</h4>
+            <div class="role">Rotating Monthly</div>
+            <div class="desc">Clinical, leadership, and business deep-dives</div>
+          </div>
+        </div>
+        <div class="dt-coming-soon">Full 2026 lineup announced soon. Watch this space.</div>
+      </div>
+    </div>
+  </section>
+  <section class="accelerator-section">
+    <div class="accelerator-inner">
+      <div class="section-header">
+        <div class="section-label">The Program</div>
+        <h2 class="section-title">Your 2-3 year accelerator</h2>
+        <p class="section-subtitle">
+          Three phases. Each one builds on the last. By the end, you'll have clinical depth, business literacy, and the leadership reps to do whatever you want next.
+        </p>
+      </div>
+      <div class="phase-grid">
+        <div class="phase-card">
+          <div class="phase-card-top">
+            <div class="phase-num">Phase 01</div>
+            <h3>Foundation</h3>
+            <div class="phase-time">Months 0 - 8</div>
+          </div>
+          <div class="phase-card-body">
+            <div class="phase-item"><span class="marker"></span>Neuro-affirming clinical foundations across PDA, ADHD and autism populations</div>
+            <div class="phase-item"><span class="marker"></span>Structured caseload management and documentation systems</div>
+            <div class="phase-item"><span class="marker"></span>Introduction to practice operations: billing, scheduling, triage</div>
+            <div class="phase-item"><span class="marker"></span>Weekly supervision and mentorship from senior clinicians</div>
+            <div class="phase-item"><span class="marker"></span>Clinic-based team environment from day one</div>
+            <div class="phase-unlock">
+              <div class="unlock-label">You unlock</div>
+              <p>Confident, autonomous clinician with neuro-affirming foundations and operational literacy</p>
+            </div>
+          </div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-card-top">
+            <div class="phase-num">Phase 02</div>
+            <h3>Specialisation</h3>
+            <div class="phase-time">Months 8 - 18</div>
+          </div>
+          <div class="phase-card-body">
+            <div class="phase-item"><span class="marker"></span>Choose your track: Sleep, Mental Health, Driving OT, or Gaming Therapy</div>
+            <div class="phase-item"><span class="marker"></span>Begin mentoring junior staff and contributing to team protocols</div>
+            <div class="phase-item"><span class="marker"></span>Practice management: KPIs, revenue levers, team metrics</div>
+            <div class="phase-item"><span class="marker"></span>Lead clinical programs and community sessions</div>
+            <div class="phase-item"><span class="marker"></span>Monthly masterclass series with external experts</div>
+            <div class="phase-unlock">
+              <div class="unlock-label">You unlock</div>
+              <p>Clinical specialist with emerging leadership capacity and real business understanding</p>
+            </div>
+          </div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-card-top">
+            <div class="phase-num">Phase 03</div>
+            <h3>Leadership</h3>
+            <div class="phase-time">Months 18 - 36</div>
+          </div>
+          <div class="phase-card-body">
+            <div class="phase-item"><span class="marker"></span>Senior clinician or clinical lead with full caseload autonomy</div>
+            <div class="phase-item"><span class="marker"></span>Practice management: budgets, hiring, service design</div>
+            <div class="phase-item"><span class="marker"></span>Internal promotion or supported transition to your own practice</div>
+            <div class="phase-item"><span class="marker"></span>Speaking, writing, and thought leadership opportunities</div>
+            <div class="phase-item"><span class="marker"></span>Revenue strategy: building your own referral pipeline</div>
+            <div class="phase-unlock">
+              <div class="unlock-label">You unlock</div>
+              <p>Ready to lead a team, manage a practice, or build your own with full confidence</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="classof-section">
+    <div class="classof-header">
+      <div class="section-label">Social Proof</div>
+      <h2>Meet the <span class="serif-em">Class of 2025</span></h2>
+      <p>
+        The first cohort through the Estus Accelerator. Two OTs who joined early, backed themselves, and are now building something most clinicians don't get access to until year five or later.
+      </p>
+    </div>
+    <div class="classof-grid">
+      <div class="classof-card">
+        <div class="classof-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Nik</h3>
+        <div class="classof-role">Occupational Therapist</div>
+        <p>"Placeholder for Nik's testimonial about his experience in the accelerator, what he's learned, and where he's heading."</p>
+        <div class="classof-phase">Currently in Phase 02</div>
+      </div>
+      <div class="classof-card">
+        <div class="classof-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Nam</h3>
+        <div class="classof-role">Occupational Therapist</div>
+        <p>"Placeholder for Nam's testimonial about his experience in the accelerator, what he's learned, and where he's heading."</p>
+        <div class="classof-phase">Currently in Phase 02</div>
+      </div>
+    </div>
+  </section>
+  <section class="pathways-section">
+    <div class="pathways-inner">
+      <div class="section-header">
+        <div class="section-label">Career Architecture</div>
+        <h2 class="section-title">Four pathways. You choose.</h2>
+        <p class="section-subtitle">
+          Not everyone wants the same thing. Four distinct tracks so you can lead in the way that fits. And yes, you can explore more than one.
+        </p>
+      </div>
+      <div class="pathways-grid">
+        <div class="pathway-card">
+          <div class="pathway-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M16.95 16.95l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M16.95 7.05l1.42-1.42"/></svg></div>
+          <h3>Clinical Lead</h3>
+          <div class="pathway-tag">Depth Track</div>
+          <p>Deep clinical expertise. Lead complex caseloads, supervise junior clinicians, shape protocols, and become the specialist others refer to.</p>
+        </div>
+        <div class="pathway-card">
+          <div class="pathway-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h3>Team Lead</h3>
+          <div class="pathway-tag">People Track</div>
+          <p>Lead a clinical pod. Manage team performance, coordinate caseloads, mentor new staff, and own the rhythm of your team.</p>
+        </div>
+        <div class="pathway-card">
+          <div class="pathway-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+          <h3>Practice Manager</h3>
+          <div class="pathway-tag">Operations Track</div>
+          <p>Revenue modelling, service design, hiring, systems. Build the infrastructure that lets great clinicians do great work.</p>
+        </div>
+        <div class="pathway-card">
+          <div class="pathway-icon"><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+          <h3>Thought Leader</h3>
+          <div class="pathway-tag">Content Track</div>
+          <p>Write, speak, build an audience. Publish clinical insights, present at conferences, and build your professional brand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="spec-section">
+    <div class="spec-inner">
+      <div class="section-header">
+        <div class="section-label">Specialisation Tracks</div>
+        <h2 class="section-title">Training you won't find anywhere else</h2>
+        <p class="section-subtitle">
+          Structured upskilling built into your role. Not self-funded weekend courses. Not "figure it out yourself." Supervised, integrated clinical training.
+        </p>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-card">
+          <div class="spec-card-icon"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+          <h3>Mental Health OT</h3>
+          <div class="tag">Clinical Specialisation</div>
+          <p>Functional mental health interventions grounded in occupation. Habit architecture, environmental design, and identity-based change.</p>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <h3>Driving OT</h3>
+          <div class="tag">Licensed Assessment</div>
+          <p>Full training from observation to independent assessor. Structured competency sign-off with mentored caseload.</p>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-icon"><svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></div>
+          <h3>Gaming Therapy</h3>
+          <div class="tag">Innovation Track</div>
+          <p>Therapeutic Minecraft, Discord communities, and structured gaming interventions. Play as clinical infrastructure.</p>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+          <h3>Sleep Performance</h3>
+          <div class="tag">Performance Protocol</div>
+          <p>Evidence-based sleep architecture. Chronotype work, 4-session frameworks, and measurable outcomes.</p>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <h3>Habit Formation</h3>
+          <div class="tag">Behaviour Design</div>
+          <p>The Small Hinges approach. High-leverage, identity-based interventions. Atomic habits meets OT.</p>
+        </div>
+        <div class="spec-card">
+          <div class="spec-card-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+          <h3>Practice Management</h3>
+          <div class="tag">Business Literacy</div>
+          <p>Revenue models, KPIs, service design. The operational thinking to run a practice, or build one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="wellbeing-section">
+    <div class="wellbeing-inner">
+      <div class="wellbeing-header">
+        <div class="section-label">Built to Last</div>
+        <h2>We build <span class="serif-em">healthier clinicians,</span><br>not just better ones.</h2>
+        <p>
+          Burnout isn't a badge of honour. It's a systems failure. The accelerator is designed around the principle that high performance and personal sustainability aren't in tension. They're the same thing.
+        </p>
+      </div>
+      <div class="wb-grid">
+        <div class="wb-card">
+          <div class="wb-card-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Burnout Prevention by Design</h3>
+          <p>Caseload caps, structured breaks, and workload monitoring that responds to early warning signs.</p>
+        </div>
+        <div class="wb-card">
+          <div class="wb-card-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <h3>Personal Growth Systems</h3>
+          <p>Build your own sleep, habit, and energy protocols using the same frameworks you teach clients.</p>
+        </div>
+        <div class="wb-card">
+          <div class="wb-card-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <h3>Confidence Architecture</h3>
+          <p>Structured progression, clear feedback, real responsibility. Confidence comes from evidence you can do hard things.</p>
+        </div>
+        <div class="wb-card">
+          <div class="wb-card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h3>Community, Not Isolation</h3>
+          <p>Weekly peer consultation, team rituals, shared challenges. Clinic-based from day one so you're never figuring it out alone.</p>
+        </div>
+        <div class="wb-card">
+          <div class="wb-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <h3>Sustainable Scheduling</h3>
+          <p>Schedules designed around energy management, not just billable hours. Rhythms that last decades.</p>
+        </div>
+        <div class="wb-card">
+          <div class="wb-card-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <h3>Meaningful Work, Always</h3>
+          <p>Varied caseloads, creative clinical freedom, and autonomy to pursue work that lights you up.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="photo-break">
+    <div class="photo-break-inner">
+      <div class="photo-placeholder">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span class="photo-label">Masterclass Session</span>
+      </div>
+      <div class="photo-placeholder">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span class="photo-label">Gaming Therapy Setup</span>
+      </div>
+      <div class="photo-placeholder">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span class="photo-label">Team Planning</span>
+      </div>
+    </div>
+  </div>
+  <section class="vs-section">
+    <div class="vs-inner">
+      <div class="section-header">
+        <div class="section-label">The Comparison</div>
+        <h2 class="section-title">What 3 years actually looks like</h2>
+        <p class="section-subtitle">No shade to traditional pathways. But the difference in trajectory is real.</p>
+      </div>
+      <div class="vs-table">
+        <div class="vs-row vs-head">
+          <div class="vs-cell"></div>
+          <div class="vs-cell">Typical OT Role</div>
+          <div class="vs-cell">Estus Accelerator</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-cell label">Onboarding</div>
+          <div class="vs-cell typical">"Here's your caseload, good luck"</div>
+          <div class="vs-cell estus">Structured 8-month foundation with weekly supervision from day one</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-cell label">Environment</div>
+          <div class="vs-cell typical">Solo mobile visits, alone in your car</div>
+          <div class="vs-cell estus">Clinic-based team environment with built-in peer support</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-cell label">Supervision</div>
+          <div class="vs-cell typical">Monthly tick-box check-ins</div>
+          <div class="vs-cell estus">52 sessions per year plus peer consultation and real-time support</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-cell label">Specialisation</div>
+          <div class="vs-cell typical">Self-funded, your own time</div>
+          <div class="vs-cell estus">Built-in training across 6 tracks with supervised caseloads</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-cell label">Leadership</div>
+          <div class="vs-cell typical">Wait 5+ years and hope</div>
+          <div class="vs-cell estus">4 distinct pathways from month 8, based on competency</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-cell label">Expert Access</div>
+          <div class="vs-cell typical">Whatever PD you can find</div>
+          <div class="vs-cell estus">12 curated masterclasses per year with hand-picked experts</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-cell label">Burnout Risk</div>
+          <div class="vs-cell typical">High. Unsupported and overloaded.</div>
+          <div class="vs-cell estus">Designed against. Caseload caps, energy management, community.</div>
+        </div>
+        <div class="vs-row">
+          <div class="vs-cell label">After 3 Years</div>
+          <div class="vs-cell typical">Slightly more experienced. Same trajectory.</div>
+          <div class="vs-cell estus">Clinical leader. Multiple specialisations. Ready for anything.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="nextgen-section">
+    <div class="nextgen-inner">
+      <div class="section-label" style="justify-content:center;">Our Philosophy</div>
+      <h2>We actively invest in <span class="serif-em">the next generation</span> of leaders.</h2>
+      <p>
+        Here's something most employers won't say: <strong>we want you to outgrow us.</strong> The accelerator is designed so that after 2-3 years, you have every option available. Stay and lead at Estus. Move into another organisation as a senior clinician. Or start your own practice with the business literacy, clinical depth, and confidence to actually make it work.
+      </p>
+      <p>
+        We don't see that as losing staff. We see it as our job. Allied health is stronger when it's led by clinicians who've been properly developed, not just credentialed. <strong>Estus Health exists to build those clinicians.</strong> If you go on to create something extraordinary, that's not a loss. That's the whole point.
+      </p>
+    </div>
+  </section>
+  <section class="faq-section">
+    <div class="faq-inner">
+      <div class="section-header">
+        <div class="section-label">Questions</div>
+        <h2 class="section-title">You're probably wondering</h2>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I pursue more than one pathway?</div>
+        <div class="faq-a">Yes. The four pathways aren't locked tracks. Most people will develop skills across two or three of them. The structure exists so you can see where your strengths are developing and lean into the one that fits you best. Plenty of great clinical leads also write and speak. Plenty of team leads also think commercially. The pathways are a framework, not a cage.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What if I want to start my own practice afterwards?</div>
+        <div class="faq-a">That's not a risk. That's one of the best outcomes. The accelerator is specifically designed to give you the clinical, operational, and financial literacy to build your own thing if that's what you want. We'll actively support you through that transition. A generation of well-trained, confident practice owners lifting the standard of allied health? That's exactly what we're trying to build.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I need to be a new grad to apply?</div>
+        <div class="faq-a">The program is designed primarily for final-year students, new graduates, and early-career OTs. If you're a few years in but feel like you missed the structured development you needed, you're welcome to reach out. We'll have an honest conversation about whether the accelerator is the right fit.</div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="cta-inner">
+      <div class="section-label" style="justify-content:center;">Your Move</div>
+      <h2>
+        2-3 years.<br>
+        <span class="accent">Estus Health.</span><br>
+        And forget.
+      </h2>
+      <p class="cta-sub">
+        Forget wondering if you chose the right career. Forget burning out before you hit your stride. Forget doing it alone.
+      </p>
+      <div class="cta-actions">
+        <button class="btn-primary">Apply to the Accelerator</button>
+        <button class="btn-ghost">Talk to the Team First</button>
+      </div>
+      <div class="cta-footer">
+        <div class="brand">Estus Health</div>
+        Neuro-affirming Occupational Therapy &middot; Perth, Western Australia<br>
+        Where clinicians become leaders who last.
+      </div>
+    </div>
+  </section>
+</body>
+</html>
