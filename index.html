@@ -123,12 +123,6 @@
   .hero-actions {
     display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.7s 0.5s ease-out forwards;
   }
-  .hero-aside {
-    position: absolute; bottom: 3rem; right: 2.5rem; font-family: var(--font-serif);
-    font-style: italic; font-size: 0.78rem; color: var(--muted-light); max-width: 240px;
-    text-align: right; line-height: 1.6; opacity: 0; animation: fadeUp 0.6s 0.8s ease-out forwards;
-  }
-  .hero-aside .strike { text-decoration: line-through; text-decoration-color: var(--primary); opacity: 0.6; }
   .photo-break {
     width: 100%; height: 320px; background: var(--noctua-tan);
     border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
@@ -482,7 +476,6 @@
     .vs-cell.label { padding-top: 1.25rem; }
     .vs-cell.typical::before { content: 'Typical: '; font-weight: 600; }
     .vs-cell.estus::before { content: 'Estus: '; font-weight: 600; color: var(--primary); }
-    .hero-aside { position: static; text-align: left; margin-top: 3rem; }
     .photo-break-inner { flex-direction: column; gap: 1rem; }
     .photo-placeholder { height: 160px; }
     .photo-break { height: auto; padding: 2rem 0; }
@@ -516,11 +509,6 @@
     <div class="hero-actions">
       <button class="btn-primary">Apply to the Accelerator</button>
       <button class="btn-ghost">Talk to the Team First</button>
-    </div>
-    <div class="hero-aside">
-      Yes, this is inspired by Makachev.
-      <span class="strike">"2-3 years Dagestan and forget."</span><br>
-      Same energy. Different arena.
     </div>
   </section>
   <div class="photo-break">
@@ -587,6 +575,38 @@
         <div class="dt-coach-card">
           <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
           <div class="dt-coach-info">
+            <h4>Jess Francis</h4>
+            <div class="role">Founder, The Training Club</div>
+            <div class="desc">AI in allied health, digital innovation, scaling clinical practice</div>
+          </div>
+        </div>
+        <div class="dt-coach-card">
+          <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="dt-coach-info">
+            <h4>Chris Antartis</h4>
+            <div class="role">Founder, Rebel Recruitment</div>
+            <div class="desc">Sales, career design, building your unique value proposition</div>
+          </div>
+        </div>
+        <div class="dt-coach-card">
+          <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="dt-coach-info">
+            <h4>Dr Karen Jacobs</h4>
+            <div class="role">Clinical Professor, Boston University</div>
+            <div class="desc">Mentorship, global networking, OT leadership and advocacy</div>
+          </div>
+        </div>
+        <div class="dt-coach-card">
+          <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="dt-coach-info">
+            <h4>Nicholas Voican</h4>
+            <div class="role">Founder, Kintsugi OT</div>
+            <div class="desc">Neuro-affirming practice, autistic adult support, telehealth models</div>
+          </div>
+        </div>
+        <div class="dt-coach-card">
+          <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="dt-coach-info">
             <h4>Trystan Conway</h4>
             <div class="role">Organisational Design Consultant</div>
             <div class="desc">Leadership, systems thinking, team architecture</div>
@@ -600,15 +620,7 @@
             <div class="desc">Allied health recruitment, career strategy</div>
           </div>
         </div>
-        <div class="dt-coach-card">
-          <div class="dt-coach-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-          <div class="dt-coach-info">
-            <h4>Guest Expert</h4>
-            <div class="role">Rotating Monthly</div>
-            <div class="desc">Clinical, leadership, and business deep-dives</div>
-          </div>
-        </div>
-        <div class="dt-coming-soon">Full 2026 lineup announced soon. Watch this space.</div>
+        <div class="dt-coming-soon">Plus more guest experts throughout 2026. Watch this space.</div>
       </div>
     </div>
   </section>
